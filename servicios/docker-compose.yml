@@ -89,7 +89,7 @@ services:
       - elastic
 
   redis:
-    image: redis:latest
+    image: redis:latest  
     command: redis-server --maxmemory 10gb --maxmemory-policy allkeys-lru
     ports:
       - "6379:6379"
@@ -107,6 +107,18 @@ services:
     environment:
       - TTL_CACHE=86400
       - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - elastic
+
+  testcacheload:
+    build:
+      context: ./cache/app
+      dockerfile: Dockerfile
+    command: python test_cache_load.py
+    depends_on:
+      - cache
+    environment:
+      - PYTHONUNBUFFERED=1
     networks:
       - elastic
 

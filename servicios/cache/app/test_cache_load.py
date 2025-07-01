@@ -2,16 +2,30 @@ import requests
 import time
 import random
 
-# Configura la URL de tu microservicio de caché
-CACHE_URL = "http://localhost:8001/eventos/{}"  # Cambia el puerto si es necesario
-
-# Lista de IDs de eventos para consultar (puedes poner IDs reales de tu base)
+CACHE_URL = "http://cache:8001/eventos/{}"  
 eventos_ids = [
-    "id1", "id2", "id3", "id4", "id5"
-    # Agrega más IDs reales aquí
+    "94b3c933-e169-4cb1-a5e8-13cc61159962",
+    "ae5362a9-0b4e-42fe-a1e5-aa7dc2b8efd3",
+    "7f24151d-7a9e-44fd-a451-2343f70fd144",
+    "123e4567-e89b-12d3-a456-426614174000",
+    "aa3d63d2-2ab9-4a48-aa35-78f6d0f72cd8",
 ]
 
-N = 100  # Número de consultas totales
+# Esperar a que el servicio de caché esté disponible
+for i in range(100):
+    try:
+        resp = requests.get("http://cache:8001/openapi.json")
+        if resp.status_code == 200:
+            print("Servicio de caché disponible.")
+            break
+    except Exception:
+        print(f"Esperando a que el servicio de caché esté disponible... ({i+1}/100)")
+        time.sleep(2)
+else:
+    print("No se pudo conectar al servicio de caché. Abortando test.")
+    exit(1)
+
+N = 100  
 resultados = []
 
 for i in range(N):
@@ -26,7 +40,6 @@ for i in range(N):
     else:
         print(f"[{i+1}] {evento_id} - ERROR")
 
-# Estadísticas
 hits = [r for r in resultados if r[0] == "CACHE"]
 misses = [r for r in resultados if r[0] != "CACHE"]
 print("\n--- Estadísticas ---")

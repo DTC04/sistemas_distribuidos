@@ -6,10 +6,10 @@ import json
 import time
 from statistics import mean
 
+
 ELASTICSEARCH_URL = os.getenv("ELASTICSEARCH_URL", "http://elasticsearch:9200")
 TTL = int(os.getenv("TTL_CACHE", 3600))
 
-# Variables globales para métricas
 hit_times = []
 miss_times = []
 total_hits = 0
@@ -27,15 +27,14 @@ async def leer_evento_cache(evento_id: str):
         hit_times.append(elapsed)
         total_hits += 1
         return {"message": "CACHE", "data": json.loads(cached_event), "response_time": elapsed}
-    # Si no está en cache, buscar en los índices de Elasticsearch
-    indices = ["eventos_tiempo", "eventos_tipo", "eventos_comuna"]
+    indices = ["eventos"]
     for index in indices:
         response = requests.get(
             f"{ELASTICSEARCH_URL}/{index}/_search",
             json={
                 "query": {
                     "match": {
-                        "_id": evento_id
+                        "uuid": evento_id
                     }
                 }
             }
