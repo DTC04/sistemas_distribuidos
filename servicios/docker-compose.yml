@@ -80,6 +80,7 @@ services:
       - filtrador
     volumes:
       - ./filtrador/outputs:/app/outputs
+      - ./resultados_pig:/app/../resultados_pig
     environment:
       - ELASTIC_URL=http://elasticsearch:9200
     command: python indexador.py
