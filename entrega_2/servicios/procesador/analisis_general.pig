@@ -1,4 +1,4 @@
-data = LOAD '/user/hadoop/eventos_filtrados.csv' 
+data = LOAD '/root/dataset/eventos_filtrados.csv' 
        USING PigStorage(',') 
        AS (uuid:chararray, tipo:chararray, comuna:chararray, timestamp:chararray, descripcion:chararray);
 
@@ -33,6 +33,6 @@ por_fecha = GROUP data_con_fecha BY fecha;
 
 conteo_por_fecha = FOREACH por_fecha GENERATE group AS fecha, COUNT(data_con_fecha) AS total;
 
-STORE conteo_por_comuna INTO '/user/hadoop/results/comuna' USING PigStorage(',');
-STORE conteo_por_tipo INTO '/user/hadoop/results/tipo' USING PigStorage(',');
-STORE conteo_por_fecha INTO '/user/hadoop/results/tiempo' USING PigStorage(',');
+STORE conteo_por_comuna INTO '/tmp/pig_results/comuna' USING PigStorage(',');
+STORE conteo_por_tipo INTO '/tmp/pig_results/tipo' USING PigStorage(',');
+STORE conteo_por_fecha INTO '/tmp/pig_results/tiempo' USING PigStorage(',');
