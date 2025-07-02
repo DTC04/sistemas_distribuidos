@@ -27,63 +27,18 @@
    docker compose up --build
    ```
 
+## 🛠️ Proceso de análisis automático con Apache Pig
+
+El proceso de análisis de datos con Apache Pig ahora se realiza de forma automática al levantar los servicios. No es necesario ejecutar manualmente los pasos anteriores, ya que el contenedor `procesador` se encarga de procesar los datos y generar los resultados en la carpeta correspondiente.
+
+Puedes revisar los resultados generados en la carpeta `servicios/resultados_pig`.
 
 
-## 🛠️ Para ejecutar scripts del pig
+## 🔎 Acceso a Elasticsearch y Kibana
 
-1. **Abrir una nueva terminal y ingresar al contenedor "procesador"**:
-```bash
-docker exec -it procesador bash
-```
-2. **Crear directorio en HDFS para el archivo fuente**:
-```bash
-hdfs dfs -mkdir -p /user/hadoop/
-```
+- **Elasticsearch**: [http://localhost:9200](http://localhost:9200)
+- **Kibana** (visualización): [http://localhost:5601](http://localhost:5601)
 
-3. **Subir el archivo CSV a HDFS**:
-```bash
-hdfs dfs -put /root/dataset/eventos_filtrados.csv /user/hadoop/
-```
-4. **Verificar que el archivo está en HDFS**:
-```bash
-hdfs dfs -ls /user/hadoop/
-```
-5. **Ejecutar el script de Pig**:
-```bash
-pig -x mapreduce -f /root/scripts/analisis_general.pig
-```
-6. **Crear carpetas locales de resultados**:
-```bash
-mkdir -p /root/results/{comuna,tipo,tiempo}
-```
-7. **Copiar archivos desde HDFS a local**:
-```bash
-hdfs dfs -copyToLocal /user/hadoop/results/comuna/part-r-00000 /root/results/comuna/
-```
-```bash
-hdfs dfs -copyToLocal /user/hadoop/results/tipo/part-r-00000 /root/results/tipo/
-```
-```bash
-hdfs dfs -copyToLocal /user/hadoop/results/tiempo/part-r-00000 /root/results/tiempo/
-```
-8. **Crear los CSV con encabezado**:
-```bash
-(echo "comuna,total" && cat /root/results/comuna/part-r-00000) > /root/results/comuna/comuna.csv
-```
-```bash
-(echo "tipo,total" && cat /root/results/tipo/part-r-00000) > /root/results/tipo/tipo.csv
-```
-```bash
-(echo "fecha,total" && cat /root/results/tiempo/part-r-00000) > /root/results/tiempo/tiempo.csv
-```
-9. **Importante** 
-   - Ir a "servicios/resultados_pig..." para ver los resultados de los pasos que se acaban de realizar
-
-
-
-
-
- 
 
 
 
